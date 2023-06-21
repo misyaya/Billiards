@@ -2,6 +2,7 @@
 #include "Engine/Model.h"
 #include "Engine/Input.h"
 #include<assert.h>
+#include "Engine/Image.h"
 //コンストラクタ
 Ball::Ball(GameObject* parent)
     :GameObject(parent, "Ball"), hModel_(-1)
@@ -35,13 +36,33 @@ void Ball::Update()
     velocity = XMVector3Normalize(velocity) * len;
     
     //ボールどうしで反射する
-    std::list<Ball*>all = FindGameObjects<Ball>();
+    std::list<Ball*>all = GetParent()->FindGameObjects<Ball>();
     for (std::list<Ball*>::iterator itr = all.begin(); itr != all.end(); itr++)
     {
         if (*itr == this) continue;
         XMFLOAT3 next = transform_.position_ + velocity; //自分の移動後の位置
         XMFLOAT3 other = (*itr)->GetNextPosition();      //相手の移動後の位置
-        //if(nextとotherが重なったら)
+        if (Length(next-other) < 1.0f*2.0f)  //球の半径2個分
+        {
+            XMVECTOR n = other - next;
+            n = XMVector3Normalize(n);   //ｎの長さを１にする
+            XMVECTOR powDot = XMVector3Dot(velocity,n);
+            float pow = XMVectorGetX(powDot);
+            //nは押す力の向き、powは押す力の大きさ
+            XMVECTOR push = n * pow; //押すベクトル→相手に渡した力
+            velocity -= push;
+            (*itr)->AddForce(push);
+
+
+            n = next - other;
+            n = XMVector3Normalize(n);   //ｎの長さを１にする
+            powDot = XMVector3Dot((*itr)->GetVelosity(),n);
+            pow = XMVectorGetX(powDot); //押す力の大きさ
+            //nは押す力の向き、powは押す力の大きさ
+            push = n * pow; //押すベクトル→相手に渡した力
+            (*itr)->AddForce(-push); //相手から引く
+            AddForce(push); //自分に加える
+        }
     }
 
     //壁に反射する
@@ -98,7 +119,8 @@ void Ball::Update()
 void Ball::Draw()
 {
     if (hModel_ < 0)
-        return;
+      return;
+   
 
     Model::SetTransform(hModel_, transform_);
     Model::Draw(hModel_);
@@ -107,9 +129,13 @@ void Ball::Draw()
 
 void Ball::SetNumber(int no)
 {
-    number = no;
-    hModel_ = Model::Load("DebugCollision/SphereCollider.fbx");
-    assert(hModel_ >= 0);   
+    std::string f = "Ball";
+    f += std::to_string(no);
+    f += ".fbx";
+    number = no; 
+   
+   hModel_ = Model::Load(f);
+   assert(hModel_ >= 0);
 }
 
 void Ball::AddForce(XMVECTOR f)

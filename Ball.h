@@ -4,7 +4,7 @@
 //◆◆◆を管理するクラス
 class Ball : public GameObject
 {
-    int hModel_;    //モデル番号
+    
 public:
     //コンストラクタ
     Ball(GameObject* parent);
@@ -27,14 +27,20 @@ public:
     //ボールに力を加える
     void AddForce(XMVECTOR f);
 
-    //
-    XMFLOAT3 GetNextPosition() { return GetPosition() + velocity; }
+
 
     //開放
     void Release() override;
 
+    XMVECTOR GetVelosity() { return velocity; }
+    XMFLOAT3 GetNextPosition() { return GetPosition() + velocity; }
+
 private:
-    
+    int hModel_;    //モデル番号
     int number; //ボールの番号
     XMVECTOR velocity;//移動速度
+
+    
+
+  
 };
