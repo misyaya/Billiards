@@ -16,7 +16,7 @@
 */
 
 Player::Player(GameObject* parent)
-	:maxHp_(180), nowHp_(0)
+	:maxHp_(180), nowHp_(0), pText(nullptr)
 {
 	direction = 0.0f;
 	power = 0.0f;
@@ -27,6 +27,14 @@ Player::Player(GameObject* parent)
 Player::~Player()
 {
 
+}
+
+void Player::Initilaize()
+{
+	pText = new Text;
+
+	pText->Initialize();
+	
 }
 
 void Player::Update()
@@ -46,16 +54,17 @@ void Player::Update()
 		if (flag) {
 			nowHp_ += 5;
 			power += 0.1;
+			if (nowHp_ > maxHp_ + 10)
+				flag = false;
 		}
 
-		if (nowHp_ > maxHp_ + 10)
-			flag = false;
+		
 
 		if (!flag)
 		{
 			nowHp_ -= 10;
-			power -= 0.1f;
-			if (nowHp_ < -1)
+			power -= 0.2f;
+			if (nowHp_+15 < -1)
 				flag = true;
 		}
 	}
@@ -76,6 +85,7 @@ void Player::Update()
 		XMVECTOR v = XMVector3Transform(base, yrot);  //その回転でベクトルの向きを変える
 		myBall->AddForce(v); //これが回転後の移動ベクトル
 	}
+	
 }
 
 void Player::Draw()
@@ -94,4 +104,11 @@ void Player::Draw()
 
 	Model::SetTransform(hModel_, transform_);
 	Model::Draw(hModel_);
+
+//	pText->Draw(10, 30, power);
+}
+
+void Player::Release()
+{
+	
 }

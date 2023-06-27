@@ -27,10 +27,13 @@ void Gauge::Initialize()
     assert(hPictFrame_ >= 0);
 
 
-    transform_.position_.x = -0.95f;
-    transform_.position_.y = 0.85f;
+    transform_.position_.x = -0.90f;
+  //  transform_.position_.y = 0.85f;
+    transform_.position_.z = -6.0f;
 
-   
+    transform_.rotate_.z = 90.0f;
+    transform_.scale_.x = 1.3f;
+
 }
 
 //çXêV
