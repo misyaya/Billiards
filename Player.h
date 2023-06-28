@@ -6,7 +6,7 @@ class Ball;
 
 class Player :public GameObject
 {
-
+	
 public:
 	Player(GameObject* parent);
 	~Player();
@@ -25,6 +25,7 @@ private:
 	
 	int nowHp_, maxHp_;
 	bool flag;
-	Text* pText;
+	int hSound_;    //ÉTÉEÉìÉhî‘çÜ
+	int hEmit;
 };
 

@@ -3,9 +3,11 @@
 #include "Engine/Input.h"
 #include<assert.h>
 #include "Engine/Image.h"
+#include "Engine/Audio.h"
+
 //コンストラクタ
 Ball::Ball(GameObject* parent)
-    :GameObject(parent, "Ball"), hModel_(-1)
+    :GameObject(parent, "Ball"), hModel_(-1), hSound_(-1)
 {
     velocity = XMVectorSet(0, 0, 0, 0);
 }
@@ -20,6 +22,11 @@ Ball::~Ball()
 //初期化
 void Ball::Initialize()
 {
+    //サウンドデータのロード
+
+    hSound_ = Audio::Load("A4_11166.WAV");
+
+    assert(hSound_ >= 0);
 }
 
 //更新
@@ -44,6 +51,7 @@ void Ball::Update()
         XMFLOAT3 other = (*itr)->GetNextPosition();      //相手の移動後の位置
         if (Length(next-other) < 1.0f*2.0f)  //球の半径2個分
         {
+           
             XMVECTOR n = other - next;
             n = XMVector3Normalize(n);   //ｎの長さを１にする
             XMVECTOR powDot = XMVector3Dot(velocity,n);
@@ -62,7 +70,10 @@ void Ball::Update()
             push = n * pow; //押すベクトル→相手に渡した力
             (*itr)->AddForce(-push); //相手から引く
             AddForce(push); //自分に加える
+
+           
         }
+       
     }
 
     //壁に反射する
@@ -94,6 +105,7 @@ void Ball::Update()
         f.x = -f.x;
         //fを加工して
         velocity = XMLoadFloat3(&f);
+        Audio::Play(hSound_);
     }
     if (next.z >= 20.0f)
     {
@@ -102,6 +114,7 @@ void Ball::Update()
         f.z = -f.z;
         //fを加工して
         velocity = XMLoadFloat3(&f);
+        Audio::Play(hSound_);
     }
     if (next.z <= -20.0f)
     {
@@ -110,6 +123,7 @@ void Ball::Update()
         f.z = -f.z;
         //fを加工して
         velocity = XMLoadFloat3(&f);
+        Audio::Play(hSound_);
     }
 
     transform_.position_ += velocity;

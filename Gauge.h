@@ -11,6 +11,7 @@ class Gauge : public GameObject
 
     bool flag = true;
     float power = 0;
+    float scalex = 1.3f;
    
 public:
     //コンストラクタ
@@ -35,7 +36,7 @@ public:
     {
         nowHp_ = nowHp;
         maxHp_ = maxHp;
-        animHp_ = (animHp_ * 4 + nowHp_) / 5;
+        animHp_ = (animHp_ * 4 + nowHp_ )/5;
         //animHp_ = ( animHp_  + nowHp_ ) / 2;
     }
 };

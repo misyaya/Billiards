@@ -28,11 +28,11 @@ void Gauge::Initialize()
 
 
     transform_.position_.x = -0.90f;
-  //  transform_.position_.y = 0.85f;
-    transform_.position_.z = -6.0f;
+    transform_.position_.y = -0.5f;
+    transform_.position_.z = 10.0f;
 
     transform_.rotate_.z = 90.0f;
-    transform_.scale_.x = 1.3f;
+    transform_.scale_.x = scalex;
 
 }
 
@@ -46,7 +46,7 @@ void Gauge::Draw()
 {
 
     Transform transGauge = transform_;
-    transGauge.scale_.x = (float)animHp_ / (float)maxHp_;
+    transGauge.scale_.x = (float)animHp_ * scalex / (float)maxHp_;
 
     Image::SetTransform(hPictGauge_, transGauge);
     Image::Draw(hPictGauge_);

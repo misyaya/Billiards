@@ -5,7 +5,7 @@
 class Ball : public GameObject
 {
     
-public:
+public:  int hSound_;    //サウンド番号
     //コンストラクタ
     Ball(GameObject* parent);
 
