@@ -4,6 +4,7 @@
 #include "Engine/Model.h"
 #include "Gauge.h"
 #include "Engine/VFX.h"
+#include "Reday.h"
 /*
 * キーボードで
 * 玉の向きを動かして　発射する
@@ -17,10 +18,14 @@
 * 壁にぶつかるとなります
 * ボール同士がぶつかったときも鳴らしたいけどダメでした
 * 
-*/
+*/    
+
+namespace {
+	const float GAUGE_TIME = 0.5f; //０から満タンになるための時間
+};
 
 Player::Player(GameObject* parent)
-	:maxHp_(180), nowHp_(0)
+	:flag(true),maxHp_(180), nowHp_(0)
 {
 	direction = 0.0f;
 	power = 0.0f;
@@ -39,7 +44,9 @@ void Player::Initilaize()
 
 void Player::Update()
 {
-	
+	Ready* pReady = FindGameObject<Ready>();
+	if (pReady != nullptr && !pReady->Finished())
+		return;
 
 	if (Input::IsKey(DIK_W))
 		direction = 0.0f;
@@ -51,49 +58,62 @@ void Player::Update()
 
 	if (Input::IsKey(DIK_SPACE))
 	{
-		if (flag) {
-			nowHp_ += 5;
-			power += 0.1;
-			if (nowHp_ > maxHp_ + 15)
+		Gauge* pGauge = (Gauge*)FindObject("Gauge");
+		
+    		if (flag)  //増える
+		{
+			power += 0.05;
+			pGauge->AddValue(Gauge::MAX / GAUGE_TIME / 60.0f);
+			if (pGauge->GetValue() >= Gauge::MIN && pGauge->GetValue() < Gauge::MAX)
+			{
+				
+
+				{
+					//EmitterData  data;
+					//data.textureFileName = "circle_Y.png";
+
+					//data.position.x =-33.0f;
+					//data.position.z =10.0f;
+					//data.positionRnd = XMFLOAT3(0.0f, 0.1, 0.0f);
+					//data.delay = 5;
+					//data.lifeTime = 150;
+					//data.accel = 0.98;
+
+					////data.direction = XMFLOAT3(0, 10, 0);
+					//data.size = XMFLOAT2(2, 2);
+					//data.sizeRnd = XMFLOAT2(0.4, 0.4);
+					//data.scale = XMFLOAT2(1.01f, 1.01f);
+					//data.color.w = 0.2f; //不透明度
+					//data.deltaColor.w = -0.002;
+					//data.position.y = -2.0f;
+					//data.rotateRnd.z = 180; //-180～180 
+					////data.spin.z = 0.2f;
+
+					//
+					//hEmit = VFX::Start(data);	//エミッターを設置
+				}
+			}
+			else
 			{
 				flag = false;
-				EmitterData  data;
-				data.textureFileName = "circle_Y.png";
-
-				data.position.x =-33.0f;
-				data.position.z =10.0f;
-				data.positionRnd = XMFLOAT3(0.0f, 0.1, 0.0f);
-				data.delay = 5;
-				data.lifeTime = 150;
-				data.accel = 0.98;
-
-				//data.direction = XMFLOAT3(0, 10, 0);
-				data.size = XMFLOAT2(2, 2);
-				data.sizeRnd = XMFLOAT2(0.4, 0.4);
-				data.scale = XMFLOAT2(1.01f, 1.01f);
-				data.color.w = 0.2f; //不透明度
-				data.deltaColor.w = -0.002;
-				data.position.y = -2.0f;
-				data.rotateRnd.z = 180; //-180～180 
-				//data.spin.z = 0.2f;
-
-				
-				hEmit = VFX::Start(data);	//エミッターを設置
-				
 			}
 
 		}
 
 		
 
-		if (!flag)
+		if (!flag) //減らす
 		{
-			nowHp_ -= 10;
-			power -= 0.2f;
-			if (nowHp_ + 15 < -1)
+			power -= 0.05;
+			pGauge->AddValue(-Gauge::MAX / GAUGE_TIME / 60.0f);
+			if (pGauge->GetValue() <= Gauge::MAX && pGauge->GetValue() > Gauge::MIN)
+			{
+				
+				VFX::End(hEmit);
+			}
+			else
 			{
 				flag = true;
-				VFX::End(hEmit);
 			}
 				
 		}

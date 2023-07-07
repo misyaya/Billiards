@@ -3,6 +3,7 @@
 #include"Engine/Camera.h"
 #include"Player.h"
 #include "Gauge.h"
+#include"Reday.h"
 
 //コンストラクタ
 TestScene::TestScene(GameObject * parent)
@@ -25,10 +26,13 @@ void TestScene::Initialize()
 
 	Player* p = Instantiate<Player>(this);
 	Ball* b = Instantiate<Ball>(this);
-	Instantiate<Gauge>(this);
+	Ready* r = Instantiate<Ready>(this);
 	b->SetPosition(-10, 0, 10);
 	b->SetNumber(0);//白玉
 	p->SetMyBall(b);
+	
+	Gauge * g = Instantiate<Gauge>(this);
+	g->SetPosition(-0.9f, -0.5f, 10.0f);
 }
 
 //更新
