@@ -30,7 +30,7 @@ namespace {
     };
     ACT currentAction; //今実行しているアクション
     bool canMove; //移動できる
-};
+}
 
 //コンストラクタ
 Ready::Ready(GameObject* parent)
@@ -53,7 +53,7 @@ void Ready::Initialize()
     hPict_ = Image::Load("READY.png");
     assert(hPict_ >= 0);
 
-    startX = 3.0f;
+    startX = 5.0f;
     endX = 0.0f;
     totalTime = 3.0f;
     currentTime = 0.0f;
